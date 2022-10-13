@@ -1,8 +1,8 @@
 import numpy as np
 from mtgsdk import Card
 
-#cardNotFound = Card()
-#cardNotFound.name, cardNotFound.cmc, cardNotFound.colors = "404 Not found", "404 Not found", 404
+cardNotFound = Card()
+cardNotFound.name, cardNotFound.cmc, cardNotFound.colors = "404 Not found", "404 Not found", 404.0
 
 def Separation(X :str):
 #   Place un ";" entre le nombre de cartes et son nom en français 
@@ -23,9 +23,9 @@ def getCardInfos(nom :str):
     cards = Card.where(name=nom).where(language='french').all()
     if len(cards) == 0:
         print("CardNotFound")
-        return "error"
+        return cardNotFound, "error"
     else:
-        return cards[0]
+        return cards[0], "ok"
 
 
     #return ";" + cards.name + ";" + str(cards.colors) + ";" + str(int(cards.cmc))
@@ -48,15 +48,18 @@ file = open("Ameliorations_dechainees.csv", "r")
 #file = open("test.csv", "r")
 replacement = ""
 ii=1
+currentCard: Card()
 
 for line in file:
     print("Traitement n°" + str(ii) + "/74")
     changes = Separation(line)
-    currentCard = getCardInfos(getSourceName(changes.strip()))
-    if currentCard != "error":
-        replacement = replacement + changes + ";" + ''.join(currentCard.colors) + ";" + str(int(currentCard.cmc)) + "\n"
+    currentCard, status = getCardInfos(getSourceName(changes.strip()))
+    if status == "ok" and currentCard.colors == None:
+        replacement = replacement + changes + ";" + "I;" + str(currentCard.cmc) + "\n"
+    elif status == "ok" :
+        replacement = replacement + changes + ";" + ''.join(currentCard.colors) + ";" + str(currentCard.cmc) + "\n"
     else:
-        replacement= replacement + "error 404 : Card not found \n"
+        replacement= replacement + changes + "error 404 : Card not found \n"
     ii=ii+1
 file.close()
 
