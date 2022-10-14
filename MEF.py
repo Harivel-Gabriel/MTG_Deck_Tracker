@@ -8,7 +8,6 @@ def Separation(X :str):
 #   Place un ";" entre le nombre de cartes et son nom en français 
     text=list(X)
     text.pop()
-    text.pop()
     for ii in range(len(text)):
         if text[ii].isnumeric():
             if text[ii + 1].isnumeric():
@@ -57,6 +56,7 @@ for line in file:
     if status == "ok" and currentCard.colors == None:
         replacement = replacement + changes + ";" + "I;" + str(currentCard.cmc) + "\n"
     elif status == "ok" :
+        print(changes)
         replacement = replacement + changes + ";" + ''.join(currentCard.colors) + ";" + str(currentCard.cmc) + "\n"
     else:
         replacement= replacement + changes + "error 404 : Card not found \n"
